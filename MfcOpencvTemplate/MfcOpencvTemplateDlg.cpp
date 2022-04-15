@@ -71,9 +71,6 @@ BOOL CMfcOpencvTemplateDlg::OnInitDialog()
 	SettingLEDStatus();
 	SettingLED_Default();
 
-	//배경 디자인 
-	m_backGround.LoadBitmap(IDB_BITMAP_GREEN);
-	m_bk_brush.CreatePatternBrush(&m_backGround);
 
 	//로그 세팅
 	create_log_file();

@@ -55,10 +55,6 @@ public:
 	// In you header make a static and a member version of onMouse
 	void onMouse(int event, int x, int y);
 	static void onMouse(int event, int x, int y, int, void* userdata);
-	//배경 생성
-	CBitmap m_backGround;
-	// 대화상자의 배경에 사용할 블러쉬 객체
-	CBrush m_bk_brush;
 
 
 	//버튼 이미지 생성

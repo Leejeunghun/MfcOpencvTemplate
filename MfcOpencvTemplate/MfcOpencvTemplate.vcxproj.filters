@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{6ef4288f-a5e2-434a-95be-1e9509e7734e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ButtonDesign">
+      <UniqueIdentifier>{82851a5e-6cbc-423d-b597-aa03907e4160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ButtonDesign">
+      <UniqueIdentifier>{857e38c6-2c25-4ba1-b2cb-b20e791e7cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\로그파일">
+      <UniqueIdentifier>{88bb2cd8-5439-4b16-a59b-ac2d04d20e1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\로그파일">
+      <UniqueIdentifier>{08c40a53-5dac-4f7f-ae58-e9a7275b3a7a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MfcOpencvTemplate.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MfcOpencvTemplateDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundButtonStyle.h">
+      <Filter>헤더 파일\ButtonDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundButton2.h">
+      <Filter>헤더 파일\ButtonDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MfcOpencvTemplate.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MfcOpencvTemplateDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundButton2.cpp">
+      <Filter>소스 파일\ButtonDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundButtonStyle.cpp">
+      <Filter>소스 파일\ButtonDesign</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MfcOpencvTemplate.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\MfcOpencvTemplate.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\MfcOpencvTemplate.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\aloeL.jpg">
+      <Filter>Data</Filter>
+    </Image>
+    <Image Include="res\LED_BLACK.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\LED_GREEN.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\LED_RED.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\LED_YELLOW.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

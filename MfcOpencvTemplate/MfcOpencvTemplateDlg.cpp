@@ -277,7 +277,7 @@ void CMfcOpencvTemplateDlg::OnBnClickedBtnVideo()
 	if (!capture->isOpened())
 	{
 		MessageBox(_T("웹캠을 열수 없습니다. \n"));
-
+		return;
 	}
 	//웹캠 크기를  320x240으로 지정    
 	capture->set(CAP_PROP_FRAME_WIDTH, 320);

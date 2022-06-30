@@ -76,9 +76,8 @@ public:
 
 	CStatic m_Picture_1;
 	VideoCapture* capture;
-
 	CImage cimage_mfc;
-
+	Mat mat_Video_frame;
 
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -121,4 +120,6 @@ public:
 
 
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedBtnTest();
 };

@@ -51,6 +51,8 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_LEDCHECK, &CMfcOpencvTemplateDlg::OnBnClickedBtnLedcheck)
 	ON_BN_CLICKED(IDC_BTN_LOG, &CMfcOpencvTemplateDlg::OnBnClickedBtnLog)
 	ON_WM_ERASEBKGND()
+	ON_WM_LBUTTONDOWN()
+	ON_BN_CLICKED(IDC_BTN_TEST, &CMfcOpencvTemplateDlg::OnBnClickedBtnTest)
 END_MESSAGE_MAP()
 
 
@@ -207,7 +209,6 @@ void CMfcOpencvTemplateDlg::onMouse(int event, int x, int y, int, void* userdata
 	CMfcOpencvTemplateDlg* settings = reinterpret_cast<CMfcOpencvTemplateDlg*>(userdata);
 	settings->onMouse(event, x, y);
 
-
 }
 
 void CMfcOpencvTemplateDlg::SettingButton()
@@ -261,9 +262,9 @@ void CMfcOpencvTemplateDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == 1000)
 	{
 		//mat_frame가 입력 이미지입니다.
-		Mat Video_frame;
-		capture->read(Video_frame);
-		DisplayImage_BitBit(Video_frame);
+
+		capture->read(mat_Video_frame);
+		DisplayImage_BitBit(mat_Video_frame);
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -670,4 +671,51 @@ BOOL CMfcOpencvTemplateDlg::OnEraseBkgnd(CDC* pDC)
 	BOOL ret = CDialog::OnEraseBkgnd(pDC);
 
 	return ret;
+}
+
+
+
+
+void CMfcOpencvTemplateDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	CRect rt;  // 픽쳐 컨트롤의 사각형 영역 조사
+     // 픽쳐 컨트롤의 사각형 좌표를 구함
+    // GetClientRect 는 크기를 구하니 GetWindowRect 이용...
+	((CStatic*)GetDlgItem(IDC_PC_1))->GetWindowRect(&rt);
+
+	// GetWindowRect 로 얻은 좌표는 스크린 좌표(물리적) 이니 이를
+	// 화면 좌표(논리적, 클라이언트 좌표)로 변환
+	ScreenToClient(&rt);
+	if (rt.PtInRect(point)) // 픽쳐 컨트롤의 사각형 영역에 마우스 클릭 좌표(point) 가 있으면...TRUE
+	{
+		cout << "X: " << point.x << "Y: " <<point.y << endl;
+	}  //참고 자료https://iamswdeveloper.tistory.com/entry/MFC%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A9%94%EB%89%B4-%EC%9C%84%EC%B9%98%EC%B2%B4%ED%81%AC
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+
+void CMfcOpencvTemplateDlg::OnBnClickedBtnTest()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	std::string pipe = "rtspsrc location=rtsp://192.168.219.106:554/user=admin&password=&channel=1&stream=0.sdp ! rtph264depay ! h264parse ! nvv4l2decoder ! nvvideoconvert ! appsink";
+
+	VideoCapture cap(pipe, CAP_GSTREAMER);
+
+	if (!cap.isOpened()) {
+		cerr << "VideoCapture not opened" << endl;
+		exit(-1);
+	}
+
+	while (true) {
+		Mat frame;
+
+		cap.read(frame);
+
+		imshow("receiver.png", frame);
+
+//		getchar();
+	}
+
+	return ;
 }

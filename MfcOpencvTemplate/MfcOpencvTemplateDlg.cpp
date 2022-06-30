@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMfcOpencvTemplateDlg::OnBnClickedBtnTest)
+	ON_BN_CLICKED(IDC_BTN_RECORD, &CMfcOpencvTemplateDlg::OnBnClickedBtnRecord)
 END_MESSAGE_MAP()
 
 
@@ -718,4 +719,63 @@ void CMfcOpencvTemplateDlg::OnBnClickedBtnTest()
 	}
 
 	return ;
+}
+
+
+void CMfcOpencvTemplateDlg::RecordWebCam()
+{
+	Mat src;
+	// use default camera as video source
+	VideoCapture cap(0);
+	// check if we succeeded
+	if (!cap.isOpened()) {
+		cerr << "ERROR! Unable to open camera\n";
+		return;
+	}
+	// get one frame from camera to know frame size and type
+	cap >> src;
+	// check if we succeeded
+	if (src.empty()) {
+		cerr << "ERROR! blank frame grabbed\n";
+		return ;
+	}
+	bool isColor = (src.type() == CV_8UC3);
+
+	//--- INITIALIZE VIDEOWRITER
+	VideoWriter writer;
+	int codec = VideoWriter::fourcc('M', 'J', 'P', 'G');  // select desired codec (must be available at runtime)
+	double fps = 25.0;                          // framerate of the created video stream
+	string filename = "C:\\BallTypeCounterBar\\live.avi";             // name of the output video file
+	writer.open(filename, codec, fps, src.size(), isColor);
+	// check if we succeeded
+	if (!writer.isOpened()) {
+		cerr << "Could not open the output video file for write\n";
+		return ;
+	}
+
+	//--- GRAB AND WRITE LOOP
+	cout << "Writing videofile: " << filename << endl
+		<< "Press any key to terminate" << endl;
+	for (;;)
+	{
+		// check if we succeeded
+		if (!cap.read(src)) {
+			cerr << "ERROR! blank frame grabbed\n";
+			break;
+		}
+		// encode the frame into the videofile stream
+		writer.write(src);
+		// show live and wait for a key with timeout long enough to show images
+		imshow("Live", src);
+		if (waitKey(5) >= 0)
+			break;
+	}
+	// the videofile will be closed and released automatically in VideoWriter destructor
+	return ;
+}
+
+void CMfcOpencvTemplateDlg::OnBnClickedBtnRecord()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	RecordWebCam();
 }

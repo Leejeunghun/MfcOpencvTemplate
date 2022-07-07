@@ -690,7 +690,10 @@ void CMfcOpencvTemplateDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	ScreenToClient(&rt);
 	if (rt.PtInRect(point)) // 픽쳐 컨트롤의 사각형 영역에 마우스 클릭 좌표(point) 가 있으면...TRUE
 	{
-		cout << "X: " << point.x << "Y: " <<point.y << endl;
+		int x = point.x - rt.left;
+		int y = point.y - rt.top;
+		//cout << "X: " << point.x << "Y: " <<point.y << endl;
+		cout << "X: " << x << "Y: " << y << endl;
 	}  //참고 자료https://iamswdeveloper.tistory.com/entry/MFC%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A9%94%EB%89%B4-%EC%9C%84%EC%B9%98%EC%B2%B4%ED%81%AC
 	CDialogEx::OnLButtonDown(nFlags, point);
 }

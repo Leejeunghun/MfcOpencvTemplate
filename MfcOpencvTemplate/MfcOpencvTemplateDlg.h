@@ -115,6 +115,10 @@ public:
 	void SettingLED(int num, int status);
 	void SettingLED_Default(); // 기본 상태로 변경
 
+	//라디오 버튼 처리
+	UINT m_Radio_index = 0;
+	afx_msg void RadioCtrl(UINT id);
+
 	afx_msg void OnBnClickedBtnLedcheck();
 
 
@@ -125,4 +129,6 @@ public:
 
 	void RecordWebCam();
 	afx_msg void OnBnClickedBtnRecord();
+
+
 };

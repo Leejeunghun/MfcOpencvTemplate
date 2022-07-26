@@ -33,6 +33,7 @@ void CMfcOpencvTemplateDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_CLOSE, m_btn_close);
 	DDX_Text(pDX, IDC_ED_LOG, m_log);
 	DDX_Control(pDX, IDC_ED_LOG, m_ed_log);
+	DDX_Radio(pDX, IDC_RADIO2, (int&)m_Radio_index);       //라디오 관련 데이터 수신 
 }
 
 BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
@@ -54,6 +55,7 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMfcOpencvTemplateDlg::OnBnClickedBtnTest)
 	ON_BN_CLICKED(IDC_BTN_RECORD, &CMfcOpencvTemplateDlg::OnBnClickedBtnRecord)
+	ON_CONTROL_RANGE(BN_CLICKED,IDC_RADIO2,IDC_RADIO4,&CMfcOpencvTemplateDlg::RadioCtrl)
 END_MESSAGE_MAP()
 
 
@@ -555,6 +557,11 @@ void CMfcOpencvTemplateDlg::SettingLED_Default()
 	{
 		SettingLED(num, 0);
 	}
+}
+
+void CMfcOpencvTemplateDlg::RadioCtrl(UINT id)
+{
+	printf("%d", id);
 }
 
 void CMfcOpencvTemplateDlg::OnBnClickedBtnLedcheck()

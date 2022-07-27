@@ -131,4 +131,5 @@ public:
 	afx_msg void OnBnClickedBtnRecord();
 
 
+	afx_msg void OnBnClickedButton2();
 };

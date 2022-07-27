@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMfcOpencvTemplateDlg::OnBnClickedBtnTest)
 	ON_BN_CLICKED(IDC_BTN_RECORD, &CMfcOpencvTemplateDlg::OnBnClickedBtnRecord)
 	ON_CONTROL_RANGE(BN_CLICKED,IDC_RADIO2,IDC_RADIO4,&CMfcOpencvTemplateDlg::RadioCtrl)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMfcOpencvTemplateDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -561,8 +562,18 @@ void CMfcOpencvTemplateDlg::SettingLED_Default()
 
 void CMfcOpencvTemplateDlg::RadioCtrl(UINT id)
 {
-	printf("%d", id);
+	UpdateData(TRUE);
+	printf("%d\n", id);
+	cout<<m_Radio_index<<endl;
 }
+
+void CMfcOpencvTemplateDlg::OnBnClickedButton2()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_Radio_index = 0;
+	UpdateData(FALSE);
+}
+
 
 void CMfcOpencvTemplateDlg::OnBnClickedBtnLedcheck()
 {
@@ -789,3 +800,5 @@ void CMfcOpencvTemplateDlg::OnBnClickedBtnRecord()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	RecordWebCam();
 }
+
+

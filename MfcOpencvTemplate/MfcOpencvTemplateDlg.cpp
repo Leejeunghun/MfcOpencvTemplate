@@ -56,7 +56,7 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMfcOpencvTemplateDlg::OnBnClickedBtnTest)
 	ON_BN_CLICKED(IDC_BTN_RECORD, &CMfcOpencvTemplateDlg::OnBnClickedBtnRecord)
 	ON_CONTROL_RANGE(BN_CLICKED,IDC_RADIO2,IDC_RADIO4,&CMfcOpencvTemplateDlg::RadioCtrl)
-	ON_BN_CLICKED(IDC_BUTTON2, &CMfcOpencvTemplateDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BTN_RADIO, &CMfcOpencvTemplateDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 

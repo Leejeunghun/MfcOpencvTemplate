@@ -21,6 +21,7 @@
 #define IDC_PC_LED_3                    1011
 #define IDC_BTN_LEDCHECK                1012
 #define IDC_BTN_LOG                     1013
+#define IDC_PC_2                        1014
 #define IDC_ED_LOG                      1016
 #define IDC_SRT_POINT                   1017
 #define IDC_BTN_TEST                    1018

@@ -34,6 +34,8 @@ void CMfcOpencvTemplateDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_LOG, m_log);
 	DDX_Control(pDX, IDC_ED_LOG, m_ed_log);
 	DDX_Radio(pDX, IDC_RADIO2, (int&)m_Radio_index);       //라디오 관련 데이터 수신 
+	DDX_Control(pDX, IDC_PC_2, m_Picture_2);
+	DDX_Control(pDX, IDC_PC_3, m_Picture_3);
 }
 
 BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
@@ -57,6 +59,7 @@ BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_RECORD, &CMfcOpencvTemplateDlg::OnBnClickedBtnRecord)
 	ON_CONTROL_RANGE(BN_CLICKED,IDC_RADIO2,IDC_RADIO4,&CMfcOpencvTemplateDlg::RadioCtrl)
 	ON_BN_CLICKED(IDC_BTN_RADIO, &CMfcOpencvTemplateDlg::OnBnClickedButton2)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -263,13 +266,6 @@ void CMfcOpencvTemplateDlg::OnDestroy()
 void CMfcOpencvTemplateDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	if (nIDEvent == 1000)
-	{
-		//mat_frame가 입력 이미지입니다.
-
-		capture->read(mat_Video_frame);
-		DisplayImage_BitBit(mat_Video_frame);
-	}
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -277,6 +273,20 @@ void CMfcOpencvTemplateDlg::OnTimer(UINT_PTR nIDEvent)
 void CMfcOpencvTemplateDlg::OnBnClickedBtnVideo()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	ThreadCameradParameter* Thread_Cam_1 = new ThreadCameradParameter;
+	Thread_Cam_1->param = this;
+	Thread_Cam_1->Cam_index = CAM_1;
+	m_isWorkingThread[CAM_1] = true;
+	m_pThread[CAM_1]= AfxBeginThread(RunGigaEThread_CAM1, Thread_Cam_1);
+
+
+	ThreadCameradParameter* Thread_Cam_2 = new ThreadCameradParameter;
+	Thread_Cam_2->param = this;
+	Thread_Cam_2->Cam_index = CAM_2;
+	m_isWorkingThread[CAM_2] = true;
+	m_pThread[CAM_2] = AfxBeginThread(RunGigaEThread_CAM1, Thread_Cam_2);
+	/* 타이머 이용방식
 	capture = new VideoCapture(0);
 
 	if (!capture->isOpened())
@@ -289,9 +299,10 @@ void CMfcOpencvTemplateDlg::OnBnClickedBtnVideo()
 	capture->set(CAP_PROP_FRAME_HEIGHT, 240);
 
 	SetTimer(1000, 30, NULL);
+	*/
 }
 
-void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage)
+void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 {
 	//화면에 보여주기 위한 처리입니다.
 	Mat mat_frame = Displayimage.clone();
@@ -326,11 +337,33 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage)
 	}
 
 	RECT r;
-	m_Picture_1.GetClientRect(&r);
+	if (i_Cam == CAM_1)
+	{
+		m_Picture_1.GetClientRect(&r);
+	}
+	else if (i_Cam == CAM_2)
+	{
+		m_Picture_2.GetClientRect(&r);
+	}
+	else if (i_Cam == PC_3)
+	{
+		m_Picture_3.GetClientRect(&r);
+	}
+
 	cv::Size winSize(r.right, r.bottom);
 
-	cimage_mfc.Create(winSize.width, winSize.height, 24);
-
+	if (i_Cam == CAM_1)
+	{
+		cimage_mfc[CAM_1].Create(winSize.width, winSize.height, 24);
+	}
+	else if (i_Cam == CAM_2)
+	{
+		cimage_mfc[CAM_2].Create(winSize.width, winSize.height, 24);
+	}
+	else if (i_Cam == PC_3)
+	{
+		cimage_mfc[PC_3].Create(winSize.width, winSize.height, 24);
+	}
 
 	BITMAPINFO* bitInfo = (BITMAPINFO*)malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
 	bitInfo->bmiHeader.biBitCount = bpp;
@@ -365,12 +398,30 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage)
 		// source and destination have same size
 		// transfer memory block
 		// NOTE: the padding border will be shown here. Anyway it will be max 3px width
-
-		SetDIBitsToDevice(cimage_mfc.GetDC(),
-			//destination rectangle
-			0, 0, winSize.width, winSize.height,
-			0, 0, 0, mat_temp.rows,
-			mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		if (i_Cam == CAM_1)
+		{
+			SetDIBitsToDevice(cimage_mfc[CAM_1].GetDC(),
+				//destination rectangle
+				0, 0, winSize.width, winSize.height,
+				0, 0, 0, mat_temp.rows,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		}
+		else if (i_Cam == CAM_2)
+		{
+			SetDIBitsToDevice(cimage_mfc[CAM_2].GetDC(),
+				//destination rectangle
+				0, 0, winSize.width, winSize.height,
+				0, 0, 0, mat_temp.rows,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		}
+		else if (i_Cam == PC_3)
+		{
+			SetDIBitsToDevice(cimage_mfc[PC_3].GetDC(),
+				//destination rectangle
+				0, 0, winSize.width, winSize.height,
+				0, 0, 0, mat_temp.rows,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		}
 	}
 	else
 	{
@@ -385,29 +436,63 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage)
 		int imgWidth = mat_temp.cols - border;
 		int imgHeight = mat_temp.rows;
 
-		StretchDIBits(cimage_mfc.GetDC(),
-			destx, desty, destw, desth,
-			imgx, imgy, imgWidth, imgHeight,
-			mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+
+		if (i_Cam == CAM_1)
+		{
+			StretchDIBits(cimage_mfc[CAM_1].GetDC(),
+				destx, desty, destw, desth,
+				imgx, imgy, imgWidth, imgHeight,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+		}
+		else if (i_Cam == CAM_2)
+		{
+			StretchDIBits(cimage_mfc[CAM_2].GetDC(),
+				destx, desty, destw, desth,
+				imgx, imgy, imgWidth, imgHeight,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+		}
+		else if (i_Cam == PC_3)
+		{
+			StretchDIBits(cimage_mfc[PC_3].GetDC(),
+				destx, desty, destw, desth,
+				imgx, imgy, imgWidth, imgHeight,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+		}
+
 	}
 
-
-	HDC dc = ::GetDC(m_Picture_1.m_hWnd);
-	cimage_mfc.BitBlt(dc, 0, 0);
-
-
-	::ReleaseDC(m_Picture_1.m_hWnd, dc);
-
-	cimage_mfc.ReleaseDC();
-	cimage_mfc.Destroy();
-
+	if (i_Cam == CAM_1)
+	{
+		HDC dc = ::GetDC(m_Picture_1.m_hWnd);
+		cimage_mfc[CAM_1].BitBlt(dc, 0, 0);
+		::ReleaseDC(m_Picture_1.m_hWnd, dc);
+		cimage_mfc[CAM_1].ReleaseDC();
+		cimage_mfc[CAM_1].Destroy();
+	}
+	else if(i_Cam == CAM_2)
+	{
+		HDC dc = ::GetDC(m_Picture_2.m_hWnd);
+		cimage_mfc[CAM_2].BitBlt(dc, 0, 0);
+		::ReleaseDC(m_Picture_2.m_hWnd, dc);
+		cimage_mfc[CAM_2].ReleaseDC();
+		cimage_mfc[CAM_2].Destroy();
+	}
+	else if (i_Cam == PC_3)
+	{
+		HDC dc = ::GetDC(m_Picture_3.m_hWnd);
+		cimage_mfc[PC_3].BitBlt(dc, 0, 0);
+		::ReleaseDC(m_Picture_2.m_hWnd, dc);
+		cimage_mfc[PC_3].ReleaseDC();
+		cimage_mfc[PC_3].Destroy();
+	}
 }
 
 
 void CMfcOpencvTemplateDlg::OnBnClickedBtnVideostop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	KillTimer(1000);
+	m_isWorkingThread[CAM_1] = false;
+	m_isWorkingThread[CAM_2] = false;
 }
 
 
@@ -436,17 +521,49 @@ void CMfcOpencvTemplateDlg::ImageShow()
 		return;
 	}
 
-	DisplayImage_BitBit(img);
+	DisplayImage_BitBit(img,CAM_1);
 }
 
 
 void CMfcOpencvTemplateDlg::OnBnClickedBtnClose()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_isWorkingThread[CAM_1] = false;
+	m_isWorkingThread[CAM_2] = false;
+	Sleep(1000); //쓰레드 죽는 시간까지 기다려 줘야함
 	::SendMessage(this->m_hWnd, WM_CLOSE, NULL, NULL);
 }
 
 
+
+UINT CMfcOpencvTemplateDlg::RunGigaEThread_CAM1(LPVOID pParam)
+{
+	ThreadCameradParameter* item = (ThreadCameradParameter*)pParam;
+	CMfcOpencvTemplateDlg* pDlg = (CMfcOpencvTemplateDlg*)item->param;
+
+	VideoCapture* capture = new VideoCapture(item->Cam_index);
+	Mat mat_Video_frame;
+	char* str_message;
+	str_message = "파라미터 적용 확인";
+	pDlg->PostMessage(PostMessageLOG,0,(LPARAM)str_message);
+
+	if (!capture->isOpened())
+	{
+		//MessageBox(_T("웹캠을 열수 없습니다. \n"));
+		return -1;
+	}
+	//웹캠 크기를  320x240으로 지정    
+	capture->set(CAP_PROP_FRAME_WIDTH, 320);
+	capture->set(CAP_PROP_FRAME_HEIGHT, 240);
+	while (pDlg->m_isWorkingThread[item->Cam_index] ==true)
+	{
+		capture->read(mat_Video_frame);
+		pDlg->mat_image[item->Cam_index] = mat_Video_frame.clone();
+		pDlg->DisplayImage_BitBit(mat_Video_frame, item->Cam_index);
+	}
+	capture->release();
+	return 0;
+}
 
 void CMfcOpencvTemplateDlg::OnBnClickedBtnSetting()
 {
@@ -798,7 +915,39 @@ void CMfcOpencvTemplateDlg::RecordWebCam()
 void CMfcOpencvTemplateDlg::OnBnClickedBtnRecord()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	RecordWebCam();
+//	RecordWebCam();
+	SaveImage(CAM_1);
+}
+
+void CMfcOpencvTemplateDlg::SaveImage(int i_CamNuM)
+{
+	if (i_CamNuM == CAM_1)
+	{
+		Mat test;
+		vconcat(mat_image[CAM_1], mat_image[CAM_2], test);
+		DisplayImage_BitBit(test, PC_3);
+	}
 }
 
 
+
+
+void CMfcOpencvTemplateDlg::OnClose()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CDialogEx::OnClose();
+}
+
+
+LRESULT CMfcOpencvTemplateDlg::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if (message == PostMessageLOG)
+	{
+		char destination[150];
+		strcpy(destination, (char*)lParam);
+		write_log_file(destination);
+	}
+	return CDialogEx::DefWindowProc(message, wParam, lParam);
+}

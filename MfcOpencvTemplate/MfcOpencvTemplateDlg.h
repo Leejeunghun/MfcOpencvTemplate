@@ -76,14 +76,16 @@ public:
 
 	CStatic m_Picture_1;
 	VideoCapture* capture;
-	CImage cimage_mfc;
+	CImage cimage_mfc[3];
 	Mat mat_Video_frame;
 
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	CWinThread* m_pThread[2];
+	bool m_isWorkingThread[2];
 	afx_msg void OnBnClickedBtnVideo();
 
-	void DisplayImage_BitBit(Mat Displayimage);
+	void DisplayImage_BitBit(Mat Displayimage, int cam);
 	afx_msg void OnBnClickedBtnVideostop();
 
 	afx_msg void OnBnClickedBtnClick();
@@ -91,12 +93,16 @@ public:
 	afx_msg void OnBnClickedBtnClose();
 
 
+	//카메라 관련 설정
+	static UINT RunGigaEThread_CAM1(LPVOID pParam);
+
 	//ini파일 관련 함수
 	afx_msg void OnBnClickedBtnSetting();
 	void OpenInifile();
 	void Readinifile();
 
 
+	
 	//LED 관련 설정
 	CStatic* p_static_LED_1 = NULL;
 	CStatic* p_static_LED_2 = NULL;
@@ -131,5 +137,13 @@ public:
 	afx_msg void OnBnClickedBtnRecord();
 
 
+	Mat mat_image[2];
+	void SaveImage(int i_CamNuM);
+
+
 	afx_msg void OnBnClickedButton2();
+	CStatic m_Picture_2;
+	afx_msg void OnClose();
+	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	CStatic m_Picture_3;
 };

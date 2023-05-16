@@ -76,7 +76,7 @@ public:
 
 	CStatic m_Picture_1;
 	VideoCapture* capture;
-	CImage cimage_mfc[2];
+	CImage cimage_mfc[3];
 	Mat mat_Video_frame;
 
 	afx_msg void OnDestroy();
@@ -137,7 +137,13 @@ public:
 	afx_msg void OnBnClickedBtnRecord();
 
 
+	Mat mat_image[2];
+	void SaveImage(int i_CamNuM);
+
+
 	afx_msg void OnBnClickedButton2();
 	CStatic m_Picture_2;
 	afx_msg void OnClose();
+	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	CStatic m_Picture_3;
 };

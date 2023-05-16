@@ -35,6 +35,7 @@ void CMfcOpencvTemplateDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ED_LOG, m_ed_log);
 	DDX_Radio(pDX, IDC_RADIO2, (int&)m_Radio_index);       //라디오 관련 데이터 수신 
 	DDX_Control(pDX, IDC_PC_2, m_Picture_2);
+	DDX_Control(pDX, IDC_PC_3, m_Picture_3);
 }
 
 BEGIN_MESSAGE_MAP(CMfcOpencvTemplateDlg, CDialogEx)
@@ -344,6 +345,10 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 	{
 		m_Picture_2.GetClientRect(&r);
 	}
+	else if (i_Cam == PC_3)
+	{
+		m_Picture_3.GetClientRect(&r);
+	}
 
 	cv::Size winSize(r.right, r.bottom);
 
@@ -354,6 +359,10 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 	else if (i_Cam == CAM_2)
 	{
 		cimage_mfc[CAM_2].Create(winSize.width, winSize.height, 24);
+	}
+	else if (i_Cam == PC_3)
+	{
+		cimage_mfc[PC_3].Create(winSize.width, winSize.height, 24);
 	}
 
 	BITMAPINFO* bitInfo = (BITMAPINFO*)malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
@@ -405,7 +414,14 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 				0, 0, 0, mat_temp.rows,
 				mat_temp.data, bitInfo, DIB_RGB_COLORS);
 		}
-
+		else if (i_Cam == PC_3)
+		{
+			SetDIBitsToDevice(cimage_mfc[PC_3].GetDC(),
+				//destination rectangle
+				0, 0, winSize.width, winSize.height,
+				0, 0, 0, mat_temp.rows,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS);
+		}
 	}
 	else
 	{
@@ -435,7 +451,13 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 				imgx, imgy, imgWidth, imgHeight,
 				mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
 		}
-
+		else if (i_Cam == PC_3)
+		{
+			StretchDIBits(cimage_mfc[PC_3].GetDC(),
+				destx, desty, destw, desth,
+				imgx, imgy, imgWidth, imgHeight,
+				mat_temp.data, bitInfo, DIB_RGB_COLORS, SRCCOPY);
+		}
 
 	}
 
@@ -455,7 +477,14 @@ void CMfcOpencvTemplateDlg::DisplayImage_BitBit(Mat Displayimage ,int i_Cam)
 		cimage_mfc[CAM_2].ReleaseDC();
 		cimage_mfc[CAM_2].Destroy();
 	}
-
+	else if (i_Cam == PC_3)
+	{
+		HDC dc = ::GetDC(m_Picture_3.m_hWnd);
+		cimage_mfc[PC_3].BitBlt(dc, 0, 0);
+		::ReleaseDC(m_Picture_2.m_hWnd, dc);
+		cimage_mfc[PC_3].ReleaseDC();
+		cimage_mfc[PC_3].Destroy();
+	}
 }
 
 
@@ -463,6 +492,7 @@ void CMfcOpencvTemplateDlg::OnBnClickedBtnVideostop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	m_isWorkingThread[CAM_1] = false;
+	m_isWorkingThread[CAM_2] = false;
 }
 
 
@@ -513,6 +543,10 @@ UINT CMfcOpencvTemplateDlg::RunGigaEThread_CAM1(LPVOID pParam)
 
 	VideoCapture* capture = new VideoCapture(item->Cam_index);
 	Mat mat_Video_frame;
+	char* str_message;
+	str_message = "파라미터 적용 확인";
+	pDlg->PostMessage(PostMessageLOG,0,(LPARAM)str_message);
+
 	if (!capture->isOpened())
 	{
 		//MessageBox(_T("웹캠을 열수 없습니다. \n"));
@@ -521,10 +555,10 @@ UINT CMfcOpencvTemplateDlg::RunGigaEThread_CAM1(LPVOID pParam)
 	//웹캠 크기를  320x240으로 지정    
 	capture->set(CAP_PROP_FRAME_WIDTH, 320);
 	capture->set(CAP_PROP_FRAME_HEIGHT, 240);
-
 	while (pDlg->m_isWorkingThread[item->Cam_index] ==true)
 	{
 		capture->read(mat_Video_frame);
+		pDlg->mat_image[item->Cam_index] = mat_Video_frame.clone();
 		pDlg->DisplayImage_BitBit(mat_Video_frame, item->Cam_index);
 	}
 	capture->release();
@@ -881,7 +915,18 @@ void CMfcOpencvTemplateDlg::RecordWebCam()
 void CMfcOpencvTemplateDlg::OnBnClickedBtnRecord()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	RecordWebCam();
+//	RecordWebCam();
+	SaveImage(CAM_1);
+}
+
+void CMfcOpencvTemplateDlg::SaveImage(int i_CamNuM)
+{
+	if (i_CamNuM == CAM_1)
+	{
+		Mat test;
+		vconcat(mat_image[CAM_1], mat_image[CAM_2], test);
+		DisplayImage_BitBit(test, PC_3);
+	}
 }
 
 
@@ -892,4 +937,17 @@ void CMfcOpencvTemplateDlg::OnClose()
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	CDialogEx::OnClose();
+}
+
+
+LRESULT CMfcOpencvTemplateDlg::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if (message == PostMessageLOG)
+	{
+		char destination[150];
+		strcpy(destination, (char*)lParam);
+		write_log_file(destination);
+	}
+	return CDialogEx::DefWindowProc(message, wParam, lParam);
 }

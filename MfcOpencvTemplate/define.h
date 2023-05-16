@@ -10,10 +10,13 @@
 
 #define CAM_1 0
 #define CAM_2 1
-
+#define PC_3  2
 
 typedef struct
 {
 	int Cam_index;
 	HANDLE param;
 }ThreadCameradParameter;
+
+
+#define PostMessageLOG WM_USER+1
